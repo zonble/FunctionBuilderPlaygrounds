@@ -2,23 +2,43 @@ import Foundation
 
 public enum Command {
 	case turn(Int)
-	case move(Int)
+	case forward(Int)
 	case loop(UInt, [Command])
 	case pass
 }
 
+/// Turn to the given angle.
+/// - Parameter angle: The angle.
 public func turn(_ angle:Int) -> Command {
 	return .turn(angle)
 }
 
-public func move(_ length:Int) -> Command {
-	return .move(length)
+/// Turn left to the given angle.
+/// - Parameter angle: The angle.
+public func left(_ angle:Int) -> Command {
+	return .turn(angle)
 }
 
-public func loop(_ count: UInt, @TurtleBuilder builder:()-> [Command]) -> Command {
-	return .loop(count, builder())
+/// Turn right to the given angle.
+/// - Parameter angle: The angle.
+public func right(_ angle:Int) -> Command {
+	return .turn(angle * -1)
 }
 
+/// Move forward.
+/// - Parameter length: How long do we move.
+public func forward(_ length:Int) -> Command {
+	return .forward(length)
+}
+
+/// Run a loop.
+/// - Parameter repeatCount: How many times do we repeat.
+/// - Parameter builder: The commands to run.
+public func loop(_ repeatCount: UInt, @TurtleBuilder builder:()-> [Command]) -> Command {
+	return .loop(repeatCount, builder())
+}
+
+/// Pass.
 public func pass()-> Command {
 	return .pass
 }
@@ -51,7 +71,7 @@ public class Turtle {
 
 	func exec(_ command: Command, points:inout [(Double, Double)],  radian: inout Double) {
 		switch command {
-		case .move(let length):
+		case .forward(let length):
 			let x = cos(radian) * Double(length)
 			let y = sin(radian) * Double(length)
 			let lastPoint = points.last!
@@ -68,7 +88,6 @@ public class Turtle {
 		case .pass:
 			break
 		}
-
 	}
 
 	func complie() -> [(Double, Double)] {
