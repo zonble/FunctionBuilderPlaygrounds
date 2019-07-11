@@ -1,27 +1,27 @@
 import Foundation
 
 public enum Command {
+	case pass
 	case turn(Int)
 	case forward(Int)
 	case loop(UInt, [Command])
-	case pass
 }
 
 /// Turn to the given angle.
 /// - Parameter angle: The angle.
-public func turn(_ angle:Int) -> Command {
+public func turn(_ angle: Int) -> Command {
 	return .turn(angle)
 }
 
 /// Turn left to the given angle.
 /// - Parameter angle: The angle.
-public func left(_ angle:Int) -> Command {
+public func left(_ angle: Int) -> Command {
 	return .turn(angle)
 }
 
 /// Turn right to the given angle.
 /// - Parameter angle: The angle.
-public func right(_ angle:Int) -> Command {
+public func right(_ angle: Int) -> Command {
 	return .turn(angle * -1)
 }
 
@@ -45,8 +45,20 @@ public func pass()-> Command {
 
 @_functionBuilder
 public struct TurtleBuilder {
-	public static func buildBlock(_ command:Command, _ commands:Command...) -> [Command] {
-		return [command] + commands
+
+	public static func buildIf(_ commands: [Command]?) -> Command {
+		if let commands = commands {
+			return  .loop(1, commands)
+		}
+		return .pass
+	}
+
+	public static func buildBlock(_ command: Command) -> [Command] {
+		return [command]
+	}
+
+	public static func buildBlock(_ commands: Command...) -> [Command] {
+		return commands
 	}
 }
 
